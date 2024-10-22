@@ -75,41 +75,46 @@ def sync_images_and_labels(image_folder, label_folder):
     image_files = set(f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png')))
     label_files = set(f for f in os.listdir(label_folder) if f.endswith('.txt'))
     
-    # Find labels without corresponding images
     labels_to_delete = []
     for label_file in tqdm(label_files, desc="Checking labels", unit="file"):
         image_name = os.path.splitext(label_file)[0]
         if not any(image_name == os.path.splitext(img)[0] for img in image_files):
             labels_to_delete.append(os.path.join(label_folder, label_file))
     
-    # Delete labels without corresponding images
-    for label_path in tqdm(labels_to_delete, desc="Deleting orphaned labels", unit="file"):
-        try:
-            os.remove(label_path)
-            print(f"Deleted orphaned label: {label_path}")
-        except Exception as e:
-            print(f"Error deleting {label_path}: {e}")
+    images_to_delete = []
+    for image_file in tqdm(image_files, desc="Checking images", unit="file"):
+        label_name = os.path.splitext(image_file)[0] + '.txt'
+        if label_name not in label_files:
+            images_to_delete.append(os.path.join(image_folder, image_file))
     
-    print(f"Deleted {len(labels_to_delete)} orphaned label files.")
+    # Delete orphaned files
+    for file_path in tqdm(labels_to_delete + images_to_delete, desc="Deleting orphaned files", unit="file"):
+        try:
+            os.remove(file_path)
+            print(f"Deleted orphaned file: {file_path}")
+        except Exception as e:
+            print(f"Error deleting {file_path}: {e}")
+    
+    print(f"Deleted {len(labels_to_delete)} orphaned label files and {len(images_to_delete)} orphaned image files.")
 
 def main():
-    image_folder = 'merged_dataset_v2/images'
-    label_folder = 'merged_dataset_v2/labels'
+    image_folder = 'data_aug/images'
+    label_folder = 'data_aug/labels'
 
-    remove_duplicates(image_folder, label_folder)
-    image_count = count_files(image_folder)
-    label_count = count_files(label_folder)
-    print(f'Total images after removing duplicates: {image_count}')
-    print(f'Total labels after removing duplicates: {label_count}')
-    images_without_labels = check_images_without_labels(image_folder, label_folder)
-    print(f'Total images without labels: {len(images_without_labels)}')
-    # sync_images_and_labels(image_folder, label_folder)
+    # remove_duplicates(image_folder, label_folder)
+    # image_count = count_files(image_folder)
+    # label_count = count_files(label_folder)
+    # print(f'Total images after removing duplicates: {image_count}')
+    # print(f'Total labels after removing duplicates: {label_count}')
+    # images_without_labels = check_images_without_labels(image_folder, label_folder)
+    # print(f'Total images without labels: {len(images_without_labels)}')
+    sync_images_and_labels(image_folder, label_folder)
 
-    # image_count = len([f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png'))])
-    # label_count = len([f for f in os.listdir(label_folder) if f.endswith('.txt')])
+    image_count = len([f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png'))])
+    label_count = len([f for f in os.listdir(label_folder) if f.endswith('.txt')])
 
-    # print(f'Total images after synchronization: {image_count}')
-    # print(f'Total labels after synchronization: {label_count}')
+    print(f'Total images after synchronization: {image_count}')
+    print(f'Total labels after synchronization: {label_count}')
 
 if __name__ == "__main__":
     main()
