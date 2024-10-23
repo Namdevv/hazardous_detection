@@ -22,7 +22,7 @@ class CameraApp(QMainWindow):
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)  
         
-        self.model = YOLO("runs/detect/train/weights/last.pt")
+        self.model = YOLO("runs_v2/detect/train/weights/best.pt")
 
     def update_frame(self):
         ret, frame = self.capture.read()
