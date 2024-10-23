@@ -19,3 +19,4 @@ grpcio-status==1.57.0
 # Utils
 python-dotenv==1.0.0
 pyyaml>=6.0.1
+distutils

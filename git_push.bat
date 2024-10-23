@@ -9,7 +9,7 @@ echo    Git Push Automation Script
 echo ====================================
 echo.
 echo 1. Check status
-echo 2. Add and commit changes
+echo 2. Add and commit changes and Push
 echo 3. Push to remote
 echo 4. Pull from remote
 echo 5. Exit
@@ -34,21 +34,12 @@ goto menu
 
 :addcommit
 cls
-echo ====================================
-echo    Adding and Committing Changes
-echo ====================================
+echo =========================================
+echo    Adding and Committing Changes -> Push
+echo =========================================
 git add .
 set /p commit_msg="Enter commit message: "
 git commit -m "%commit_msg%"
-echo.
-pause
-goto menu
-
-:push
-cls
-echo ====================================
-echo    Pushing to Remote Repository
-echo ====================================
 git push
 echo.
 pause
