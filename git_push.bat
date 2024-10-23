@@ -60,4 +60,3 @@ echo ====================================
 echo    Thank you for using Git Push Automation!
 echo ====================================
 pause
-exit
