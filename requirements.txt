@@ -8,7 +8,7 @@ annotated-types==0.7.0
 anyio==4.6.2.post1
 appdirs==1.4.4
 asgiref==3.8.1
-asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1698341106958/work
+asttokens==2.4.0
 astunparse==1.6.3
 attr==0.3.1
 attrs==24.2.0
