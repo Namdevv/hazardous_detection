@@ -98,8 +98,8 @@ def sync_images_and_labels(image_folder, label_folder):
     print(f"Deleted {len(labels_to_delete)} orphaned label files and {len(images_to_delete)} orphaned image files.")
 
 def main():
-    image_folder = 'data_aug/images'
-    label_folder = 'data_aug/labels'
+    image_folder = 'merged_dataset_v4/train/images'
+    label_folder = 'merged_dataset_v4/train/labels'
 
     # remove_duplicates(image_folder, label_folder)
     # image_count = count_files(image_folder)
