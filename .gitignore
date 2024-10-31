@@ -11,3 +11,5 @@ merged_dataset/
 data_ogni/
 .streamlit/
 merged_dataset_v4/
+datasets/
+merged_dataset_v1/

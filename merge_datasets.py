@@ -69,12 +69,12 @@ def merge_datasets(dataset1_path, dataset2_path, output_path, classes_to_remove)
                             f.writelines(updated_lines)
 
 # Paths to your datasets and output
-dataset1_path = r'C:\Users\Admin\Downloads\hazardous_tem_craw.v2i.yolov11'
+dataset1_path = r'C:\Users\Admin\Downloads\hazardous_oxi.v3i.yolov11'
 dataset2_path = 'merged_dataset'
-output_path = 'merged_dataset_v2'
+output_path = 'merged_dataset_v1'
 
 # List of classes to remove
-classes_to_remove = ['008_Inhalation hazard', '016_BlueBarrel']
+classes_to_remove = ['inhalation', 'explosive substances']
 
 # Merge datasets
 merge_datasets(dataset1_path, dataset2_path, output_path, classes_to_remove)

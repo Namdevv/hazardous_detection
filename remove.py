@@ -98,21 +98,23 @@ def sync_images_and_labels(image_folder, label_folder):
     print(f"Deleted {len(labels_to_delete)} orphaned label files and {len(images_to_delete)} orphaned image files.")
 
 def main():
-    image_folder = 'merged_dataset_v4/train/images'
-    label_folder = 'merged_dataset_v4/train/labels'
+    image_folder = 'merged_dataset_v1/images'
+    label_folder = 'merged_dataset_v1/labels'
 
-    # remove_duplicates(image_folder, label_folder)
-    # image_count = count_files(image_folder)
-    # label_count = count_files(label_folder)
-    # print(f'Total images after removing duplicates: {image_count}')
-    # print(f'Total labels after removing duplicates: {label_count}')
-    sync_images_and_labels(image_folder, label_folder)
+    remove_duplicates(image_folder, label_folder)
+    image_count = count_files(image_folder)
+    label_count = count_files(label_folder)
+    print(f'Total images after removing duplicates: {image_count}')
+    print(f'Total labels after removing duplicates: {label_count}')
+    # images_without_labels = check_images_without_labels(image_folder, label_folder)
+    # print(f'{images_without_labels}')
+    # sync_images_and_labels(image_folder, label_folder)
 
-    image_count = len([f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png'))])
-    label_count = len([f for f in os.listdir(label_folder) if f.endswith('.txt')])
+    # image_count = len([f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png'))])
+    # label_count = len([f for f in os.listdir(label_folder) if f.endswith('.txt')])
 
-    print(f'Total images after synchronization: {image_count}')
-    print(f'Total labels after synchronization: {label_count}')
+    # print(f'Total images after synchronization: {image_count}')
+    # print(f'Total labels after synchronization: {label_count}')
 
 if __name__ == "__main__":
     main()
