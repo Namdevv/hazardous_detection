@@ -5,7 +5,7 @@ import random
 from classname import class_names
 import torch
 device = "cuda" if torch.cuda.is_available() else "cpu" 
-
+print(device)
 def visualize_image_and_label(image_folder, label_folder, class_names):
     for image_filename in os.listdir(image_folder):
         if image_filename.endswith('.jpg') or image_filename.endswith('.png'):
@@ -118,13 +118,13 @@ def visualize_random_images(image_folder, label_folder, class_names, num_images=
 # from ultralytics import YOLO
 # import numpy as np
 # # 1. Load model
-# model = YOLO("runs_v2/detect/train/weights/best.pt")
+# model = YOLO("runs_RT_BETR/detect/train4/weights/best.pt")
 # model.to(device)
 # # 2. Load dataset 
 # dataset = sv.DetectionDataset.from_yolo(
-#     images_directory_path=r"c:\Users\Admin\Downloads\merged_dataset_v2_remove_dup\merged_dataset_v2_remove_dup\test\images",
-#     annotations_directory_path=r"c:\Users\Admin\Downloads\merged_dataset_v2_remove_dup\merged_dataset_v2_remove_dup\test\labels",
-#     data_yaml_path="merged_dataset_v3/data.yaml"
+#     images_directory_path='merged_dataset_v1/val/images',
+#     annotations_directory_path='merged_dataset_v1/val/labels',
+#     data_yaml_path="merged_dataset_v1/data.yaml"
 # )
 
 # # 3. Định nghĩa callback function để chạy inference
@@ -156,5 +156,3 @@ def visualize_random_images(image_folder, label_folder, class_names, num_images=
 #     print("\nF1 scores per class:", confusion_matrix.f1_scores)  # In điểm F1
 # if hasattr(confusion_matrix, 'map'):
 #     print("mAP:", confusion_matrix.map)
-
-visualize_random_images('data_aug/images', 'data_aug/labels', class_names)

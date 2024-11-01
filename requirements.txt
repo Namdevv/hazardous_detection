@@ -1,6 +1,5 @@
 albumentations
 PyQt5
-pip
 PySocks
 scikit-learn
 streamlit-webrtc
