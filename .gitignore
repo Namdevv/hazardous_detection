@@ -13,4 +13,4 @@ data_ogni/
 merged_dataset_v4/
 datasets/
 merged_dataset_v1/
-runs_RT_BETR/detect/train2/weights/last.pt
+runs_RT_BETR/detect/train2/weights
