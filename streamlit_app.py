@@ -1,85 +1,40 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
 import cv2
-import av
 import numpy as np
-from ultralytics import YOLO
-import logging
+from ultralytics import RTDETR
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
+# Load your model (replace with the path to your model file)
+model = RTDETR("path_to_your_model/best.pt")
 
-# Load the YOLO model
-@st.cache_resource
-def load_model():
-    return YOLO("runs_v2/detect/train/weights/best.pt")
+# Set the title of the app
+st.title("Hazardous Object Detection with RTDETR")
 
-model = load_model()
+# File uploader widget to upload an image
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
 
-# Streamlit App Title
-st.title("YOLO Detection via Webcam")
+if uploaded_file is not None:
+    # Load image file with OpenCV
+    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-# Video transformer class for real-time detection
-class YOLOVideoTransformer(VideoTransformerBase):
-    def transform(self, frame):
-        img = frame.to_ndarray(format="bgr24")
-        
-        # Perform YOLO detection
-        results = model(img)
-        
-        # Draw bounding boxes and labels on the image
-        for result in results:
-            boxes = result.boxes.cpu().numpy()
-            for box in boxes:
-                x1, y1, x2, y2 = box.xyxy[0].astype(int)
-                conf = box.conf[0]
-                cls = int(box.cls[0])
-                label = f"{model.names[cls]} {conf:.2f}"
-                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(img, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-        
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
+    # Perform detection
+    results = model(image)
 
-# Webrtc streamer
-rtc_configuration = RTCConfiguration(
-    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
-)
+    # Extract boxes and names
+    boxes = results[0].boxes
+    names = results[0].names
 
-try:
-    webrtc_ctx = webrtc_streamer(
-        key="YOLO",
-        video_transformer_factory=YOLOVideoTransformer,
-        async_transform=True,
-        rtc_configuration=rtc_configuration,
-        media_stream_constraints={"video": True, "audio": False},
-    )
-    
-    if webrtc_ctx.video_transformer:
-        st.write("WebRTC connection established successfully.")
-    else:
-        st.warning("WebRTC video transformer is not initialized. Please check your camera and browser settings.")
-        
-except Exception as e:
-    st.error(f"An error occurred: {str(e)}")
-    logging.exception("Exception in webrtc_streamer")
-    st.info("If you're running locally, make sure to use HTTPS. Run with: streamlit run streamlit_app.py --server.sslCert=cert.pem --server.sslKey=key.pem")
+    # Draw boxes on the image
+    for box in boxes:
+        x1, y1, x2, y2 = map(int, box.xyxy[0])  # Get box coordinates
+        label = names[int(box.cls[0])]         # Get label name
+        confidence = box.conf[0]               # Confidence score
 
-# Additional description
-st.write("Using YOLO to detect objects from your webcam feed.")
+        # Draw bounding box and label
+        cv2.rectangle(image_rgb, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        cv2.putText(image_rgb, f"{label} {confidence:.2f}", (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
 
-# Add a note about HTTPS requirement
-st.info("Note: This app requires a secure connection (HTTPS) to access the webcam. If you're running locally, use the command mentioned above to run with HTTPS.")
-
-# Display WebRTC state
-if webrtc_ctx is not None:
-    if webrtc_ctx.state.playing:
-        st.write("WebRTC is currently playing.")
-    else:
-        st.write("WebRTC is not playing. Please start the stream.")
-
-    # Display any WebRTC errors
-    if hasattr(webrtc_ctx.state, 'error'):
-        if webrtc_ctx.state.error:
-            st.error(f"WebRTC error: {webrtc_ctx.state.error}")
-else:
-    st.warning("WebRTC context is not available. There might be an issue with the WebRTC setup.")
+    # Display the image in Streamlit
+    st.image(image_rgb, caption="Detected Image", use_column_width=True)
