@@ -4,7 +4,7 @@ import numpy as np
 from ultralytics import RTDETR
 
 # Load your model (replace with the path to your model file)
-model = RTDETR("path_to_your_model/best.pt")
+model = RTDETR("runs_v3/detect/train/weights/best.pt")
 
 # Set the title of the app
 st.title("Hazardous Object Detection with RTDETR")
